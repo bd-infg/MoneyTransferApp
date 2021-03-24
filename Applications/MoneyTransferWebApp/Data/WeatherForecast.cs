@@ -1,6 +1,6 @@
 using System;
 
-namespace MoneyTransferApp.Data
+namespace MoneyTransferWebApp.Data
 {
     public class WeatherForecast
     {

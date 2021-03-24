@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MoneyTransferApp.Data;
+using MoneyTransferWebApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MoneyTransferApp
+namespace MoneyTransferWebApp
 {
     public class Startup
     {
