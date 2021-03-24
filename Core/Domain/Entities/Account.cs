@@ -20,6 +20,7 @@ namespace Domain.Entities
         public decimal MonthlyIncome { get; private set; }
         public decimal MonthlyOutcome { get; private set; }
         public ICollection<Transaction> Transactions { get; private set; }
+        public byte[] RowVersion { get; private set; }
         public Account()
         {
             Transactions = new List<Transaction>();
