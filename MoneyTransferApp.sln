@@ -3,7 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoneyTransferApp", "MoneyTransferApp\MoneyTransferApp.csproj", "{C23E5D6D-94F0-4DD5-BB8A-DD504197FC53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoneyTransferWebApp", "MoneyTransferApp\MoneyTransferWebApp.csproj", "{C23E5D6D-94F0-4DD5-BB8A-DD504197FC53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{29B4D3F6-C702-4152-B32F-13BA7CEA60A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F1D13BC4-7BB0-4F3E-8D2C-F4E570AD03DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E916577A-2B14-4E70-91CE-FBE7FC10770F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{86B6EC86-2EB2-4F1D-8E06-6CDC12B2DA15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Domain", "Core\Core.Domain\Core.Domain.csproj", "{652F81CB-3918-4030-97A4-DF84FCAF0EFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +25,16 @@ Global
 		{C23E5D6D-94F0-4DD5-BB8A-DD504197FC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C23E5D6D-94F0-4DD5-BB8A-DD504197FC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C23E5D6D-94F0-4DD5-BB8A-DD504197FC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{652F81CB-3918-4030-97A4-DF84FCAF0EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{652F81CB-3918-4030-97A4-DF84FCAF0EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{652F81CB-3918-4030-97A4-DF84FCAF0EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{652F81CB-3918-4030-97A4-DF84FCAF0EFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{652F81CB-3918-4030-97A4-DF84FCAF0EFA} = {F1D13BC4-7BB0-4F3E-8D2C-F4E570AD03DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04B619AC-3331-4EDB-895A-79DAA245E74B}
