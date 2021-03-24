@@ -1,17 +1,20 @@
+using Common.EFCoreDataAccess;
+using EFCoreDataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MoneyTransferApp.Data;
+using MoneyTransferWebApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MoneyTransferApp
+namespace MoneyTransferWebApp
 {
     public class Startup
     {
@@ -28,7 +31,12 @@ namespace MoneyTransferApp
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddDbContextPool<CoreEFCoreDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration["ConnectionStrings:DevConnection"]);
+            });
+
+            services.AddScoped<EFCoreUnitOfWork, CoreEFCoreUnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
