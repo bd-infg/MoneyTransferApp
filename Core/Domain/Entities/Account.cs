@@ -21,6 +21,7 @@ namespace Domain.Entities
         public decimal MonthlyOutcome { get; private set; }
         public ICollection<Transaction> Transactions { get; private set; }
         public byte[] RowVersion { get; private set; }
+        public bool Blocked { get; private set; }
         public Account()
         {
             Transactions = new List<Transaction>();
@@ -36,18 +37,28 @@ namespace Domain.Entities
             Password = password;
             AccountNumber = accountNumber;
             OpeningDate = DateTime.Now;
-            LastTransactionDate = DateTime.MinValue;
+            LastTransactionDate = DateTime.Now.AddMonths(-1);
             MonthlyIncome = 0.0m;
             MonthlyOutcome = 0.0m;
             Balance = 0.0m;
             Transactions = new List<Transaction>();
+            Blocked = false;
         }
 
         public Transaction PayIn(decimal amount, TransactionType type, string accountFrom)
         {
             Balance += amount;
+            if (LastTransactionDate.Month < DateTime.Now.Month)
+            {
+                MonthlyIncome = amount;
+            }
+            else
+            {
+                MonthlyIncome += amount;
+            }
             var transaction = new Transaction(amount, accountFrom, this.Id, type, TransactionFlowType.In);
             Transactions.Add(transaction);
+            LastTransactionDate = DateTime.Now;
             return transaction;
         }
 
@@ -58,9 +69,28 @@ namespace Domain.Entities
             {
                 throw new AccountBalanceInsuficcientException($"Your account has insufficient funds, you need {amount - Balance} more");
             }
+            if (LastTransactionDate.Month < DateTime.Now.Month)
+            {
+                MonthlyOutcome = amount;
+            }
+            else
+            {
+                MonthlyOutcome += amount;
+            }
             var transaction = new Transaction(amount, this.Id, accountTo, type, TransactionFlowType.Out);
             Transactions.Add(transaction);
+            LastTransactionDate = DateTime.Now;
             return transaction;
+        }
+
+        public void Block()
+        {
+            Blocked = true;
+        }
+
+        public void Unblock()
+        {
+            Blocked = false;
         }
     }
 }

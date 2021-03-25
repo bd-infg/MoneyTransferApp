@@ -1,4 +1,7 @@
+using ApplicationServices;
 using Common.EFCoreDataAccess;
+using Domain.Repositories;
+using Domain.Services.External.BankService;
 using EFCoreDataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -8,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MockBankService;
 using MoneyTransferWebApp.Data;
 using System;
 using System.Collections.Generic;
@@ -36,7 +40,19 @@ namespace MoneyTransferWebApp
                 options.UseSqlServer(Configuration["ConnectionStrings:DevConnection"]);
             });
 
+            services.AddScoped<ICoreUnitOfWork, CoreEFCoreUnitOfWork>();
             services.AddScoped<EFCoreUnitOfWork, CoreEFCoreUnitOfWork>();
+            services.AddScoped<IBankService, BankService>();
+
+            services.AddScoped((IServiceProvider serviceProvider) =>
+            {
+                var coreUnitOfWork = serviceProvider.GetRequiredService<ICoreUnitOfWork>();
+                var bankService = serviceProvider.GetRequiredService<IBankService>();
+
+                var accountService = new AccountService(coreUnitOfWork, bankService);
+                return accountService;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
