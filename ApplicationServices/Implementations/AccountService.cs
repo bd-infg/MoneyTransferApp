@@ -49,7 +49,7 @@ namespace ApplicationServices
                 throw new ArgumentException("You are not at least 18 years old!");
             }
 
-            string bankPassword = await BankService.AuthenticateUser(accountDTO.AccountNumber, accountDTO.Pin);
+            string bankPassword = await BankService.CheckStatus(accountDTO.Id, accountDTO.Pin);
             if(bankPassword == "ERROR!")
             {
                 throw new ArgumentException("Your bank credentials are wrong!");

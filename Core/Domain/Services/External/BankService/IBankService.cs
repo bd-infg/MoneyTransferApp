@@ -7,6 +7,6 @@ namespace Domain.Services.External.BankService
 {
     public interface IBankService
     {
-        Task<string> AuthenticateUser(string accountNumber, string pin);
+        Task<string> CheckStatus(string personalId, string pin);
     }
 }
