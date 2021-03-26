@@ -1,14 +1,16 @@
 ﻿using ApplicationServices.DTOs;
+using ApplicationServices.Interfaces;
 using Domain.Entities;
 using Domain.Repositories;
 using Domain.Services.External.BankService;
+using Enums;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
 
 namespace ApplicationServices
 {
-    public class AccountService
+    public class AccountService : IAccountService
     {
         private readonly ICoreUnitOfWork CoreUnitOfWork;
         private readonly IBankService BankService;

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Enums\Enums\Enums.csproj" />
     <ProjectReference Include="..\..\Common\Utils\Utils.csproj" />
   </ItemGroup>
 
