@@ -1,0 +1,74 @@
+﻿using ApplicationServices.DTOs;
+using ApplicationServices.Interfaces;
+using Domain.Entities;
+using Domain.Repositories;
+using Domain.Services.External.BankService;
+using Enums;
+using System;
+using System.Globalization;
+using System.Threading.Tasks;
+
+namespace ApplicationServices
+{
+    public class AccountService : IAccountService
+    {
+        private readonly ICoreUnitOfWork CoreUnitOfWork;
+        private readonly IBankService BankService;
+
+        public AccountService(
+            ICoreUnitOfWork coreUnitOfWork,
+            IBankService bankService
+            )
+        {
+            CoreUnitOfWork = coreUnitOfWork;
+            BankService = bankService;
+        }
+
+        public async Task<string> CreateAccount(AccountDTO accountDTO)
+        {
+            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountDTO.Id);
+            if(account != null)
+            {
+                throw new ArgumentException("Account for this person already exists!");
+            }
+
+            string dateOfBirthString = accountDTO.Id.Substring(0, 7);
+            if(dateOfBirthString[4] == '9')
+            {
+                dateOfBirthString = dateOfBirthString.Insert(4, "1");
+            }
+            else
+            {
+                dateOfBirthString = dateOfBirthString.Insert(4, "2");
+            }
+
+            var dateOfBirth = new DateTime(int.Parse(dateOfBirthString.Substring(4, 4)), int.Parse(dateOfBirthString.Substring(2, 2)), int.Parse(dateOfBirthString.Substring(0, 2)));
+            var eighteenplus = dateOfBirth.AddYears(18);
+            if(DateTime.Now < eighteenplus)
+            {
+                throw new ArgumentException("You are not at least 18 years old!");
+            }
+
+            string bankPassword = await BankService.AuthenticateUser(accountDTO.AccountNumber, accountDTO.Pin);
+            if(bankPassword == "ERROR!")
+            {
+                throw new ArgumentException("Your bank credentials are wrong!");
+            }
+
+            account = new Account(
+                accountDTO.Id,
+                accountDTO.FirstName,
+                accountDTO.LastName,
+                (BankType)accountDTO.Bank,
+                accountDTO.Pin,
+                accountDTO.AccountNumber,
+                bankPassword
+                );
+            await CoreUnitOfWork.AccountRepository.Insert(account);
+            await CoreUnitOfWork.SaveChangesAsync();
+
+            return account.Password;
+            
+        }
+    }
+}

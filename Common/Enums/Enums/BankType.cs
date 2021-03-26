@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Entities
+namespace Enums
 {
     public enum BankType : int
     {

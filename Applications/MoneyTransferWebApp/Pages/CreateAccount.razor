@@ -1,0 +1,40 @@
+﻿@page "/createAccount"
+@using Enums
+<h1>Kreiraj nalog</h1>
+
+    <EditForm Model="@Input" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-lg-12 col-sm-12">
+            <small><label for="fName">Ime</label></small>
+            <InputText id="fName" class="form-control" @bind-Value=@Input.FirstName></InputText>
+
+            <small><label for="lName">Prezime </label></small>
+            <InputText id="lName" class="form-control" @bind-Value=@Input.LastName></InputText>
+
+            <small><label for="personalId">JMBG</label></small>
+            <InputText id="personalId" class="form-control" @bind-Value=@Input.Id></InputText>
+
+            <small><label for="paymentCode">Banka</label></small>
+            <InputSelect class="form-control" @bind-Value="@Input.Bank" style="text-overflow: ellipsis;width: 100%;">
+                <option disabled selected>Izaberite banku</option>
+                @foreach (var bank in Enum.GetNames(typeof(BankType)))
+                {
+                    <option value=@bank>@bank</option>
+                }
+            </InputSelect>
+
+            <small><label for="accno">Broj računa </label></small>
+            <InputText id="accno" class="form-control" @bind-Value=@Input.AccountNumber></InputText>
+
+            <small><label for="pin">PIN</label></small>
+            <InputText type="password" id="pin" class="form-control" @bind-Value=@Input.Pin></InputText>
+
+            <small><label for="but">&nbsp;&nbsp;</label></small>
+            <hr />
+            <button id="but" type="submit" class="btn btn-success">Registruj se</button>
+        </div>
+    </EditForm>
+
+
