@@ -49,7 +49,7 @@ namespace ApplicationServiceTests
                 int id  = await systemParameterService.AddNewSystemParameter(systemParameterDTO);
 
                 //Assert
-                SystemParameter systemParameter = await _coreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Id != null);
+                SystemParameter systemParameter = await _coreUnitOfWork.SystemParameterRepository.GetById(id);
        
                 Assert.AreNotEqual(null, systemParameter, "SystemParameter must not be null");
                 Assert.AreEqual("Parameter1", systemParameter.Name, "Name must be Parameter1");

@@ -24,5 +24,15 @@ namespace MockBankService
             var result = new string(chars);
             return result;
         }
+
+        public async Task<bool> Withdraw(string personalId, string pin)
+        {
+            return true;
+        }
+
+        public async Task<bool> Deposit(string personalId, string pin)
+        {
+            return true;
+        }
     }
 }
