@@ -29,7 +29,7 @@ namespace ApplicationServiceTests
                 dbContext.SystemParameters.Add(monthlyOutcomeLimit);
                 dbContext.SaveChanges();
 
-                SystemParameter provisionLimit = new SystemParameter("ProcisionLimit", 10000.00m);
+                SystemParameter provisionLimit = new SystemParameter("ProvisionLimit", 10000.00m);
                 dbContext.SystemParameters.Add(provisionLimit);
                 dbContext.SaveChanges();
 

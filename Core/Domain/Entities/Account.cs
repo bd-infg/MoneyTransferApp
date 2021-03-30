@@ -73,11 +73,11 @@ namespace Domain.Entities
             decimal newMonthlyOutcome;
             if (LastTransactionDate < DateTime.Now && LastTransactionDate.Month < DateTime.Now.Month)
             {
-                newMonthlyOutcome = amount;
+                newMonthlyOutcome = amount + provision;
             }
             else
             {
-                newMonthlyOutcome = MonthlyOutcome + amount;
+                newMonthlyOutcome = MonthlyOutcome + amount + provision;
             }
             if (newMonthlyOutcome > monthlyOutcomeLimit)
             {
@@ -98,7 +98,7 @@ namespace Domain.Entities
 
             if (type == TransactionType.IntraWallet)
             {
-                var provisionTransaction = new Transaction(provision, this.Id, accountTo, TransactionType.Compensation, TransactionFlowType.Out);
+                var provisionTransaction = new Transaction(provision, this.Id, "System", TransactionType.Compensation, TransactionFlowType.Out);
                 Transactions.Add(provisionTransaction);
                 cnt++;
             }

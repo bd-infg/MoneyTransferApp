@@ -11,5 +11,6 @@ namespace ApplicationServices.Interfaces
         public Task<string> CreateAccount(AccountDTO accountDTO);
         public Task<bool> AccountPayIn(AccountBankTransferDTO accountBankTransferDTO);
         public Task<bool> AccountPayOut(AccountBankTransferDTO accountBankTransferDTO);
+        public Task<bool> IntraWalletTransfer(IntraWalletTransferDTO intraWalletTransferDTO);
     }
 }

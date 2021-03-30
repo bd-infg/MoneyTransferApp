@@ -316,5 +316,107 @@ namespace ApplicationServiceTests
                 Assert.Fail("Unexpected error: " + ex.Message);
             }
         }
+
+        [TestMethod]
+        public async Task TestAccountIntraWalletTransferBelowLimit()
+        {
+            try
+            {
+                //Arrange
+                AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
+                var accountDTO1 = new AccountDTO()
+                {
+                    Id = "2705996887797",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                var accountDTO2 = new AccountDTO()
+                {
+                    Id = "2705996887798",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                string password1 = await accountService.CreateAccount(accountDTO1);
+                string password2 = await accountService.CreateAccount(accountDTO2);
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887797", Password = password1, Amount = 200.00m });
+
+                //Act
+                await accountService.IntraWalletTransfer(new IntraWalletTransferDTO() { Amount = 100.00m, IdFrom = "2705996887797", IdTo = "2705996887798", Password = password1 }) ;
+
+                //Assert
+                Account account1 = await _coreUnitOfWork.AccountRepository.GetById("2705996887797");
+                Account account2 = await _coreUnitOfWork.AccountRepository.GetById("2705996887798");
+                Assert.AreEqual(0.0m, account1.Balance, "Balance must be 0");
+                Assert.AreEqual(200.0m, account1.MonthlyIncome, "MonthlyIncome must be 200");
+                Assert.AreEqual(200.0m, account1.MonthlyOutcome, "MonthlyOutcome must be 200");
+                Assert.AreEqual(100.0m, account2.Balance, "Balance must be 100");
+                Assert.AreEqual(100.0m, account2.MonthlyIncome, "MonthlyIncome must be 100");
+                Assert.AreEqual(0.0m, account2.MonthlyOutcome, "MonthlyOutcome must be 0");
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Unexpected error: " + ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestAccountIntraWalletTransferOverLimit()
+        {
+            try
+            {
+                //Arrange
+                AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
+                var accountDTO1 = new AccountDTO()
+                {
+                    Id = "2705996887799",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                var accountDTO2 = new AccountDTO()
+                {
+                    Id = "2705996887700",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                string password1 = await accountService.CreateAccount(accountDTO1);
+                string password2 = await accountService.CreateAccount(accountDTO2);
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887799", Password = password1, Amount = 20000.00m });
+
+                //Act
+                await accountService.IntraWalletTransfer(new IntraWalletTransferDTO() { Amount = 15000.00m, IdFrom = "2705996887799", IdTo = "2705996887700", Password = password1 });
+
+                //Assert
+                Account account1 = await _coreUnitOfWork.AccountRepository.GetById("2705996887799");
+                Account account2 = await _coreUnitOfWork.AccountRepository.GetById("2705996887700");
+                Assert.AreEqual(4850.0m, account1.Balance, "Balance must be 4850");
+                Assert.AreEqual(20000.0m, account1.MonthlyIncome, "MonthlyIncome must be 20000");
+                Assert.AreEqual(15150, account1.MonthlyOutcome, "MonthlyOutcome must be 15150");
+                Assert.AreEqual(15000.0m, account2.Balance, "Balance must be 15000");
+                Assert.AreEqual(15000.0m, account2.MonthlyIncome, "MonthlyIncome must be 15000");
+                Assert.AreEqual(0.0m, account2.MonthlyOutcome, "MonthlyOutcome must be 0");
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Unexpected error: " + ex.Message);
+            }
+        }
     }
 }

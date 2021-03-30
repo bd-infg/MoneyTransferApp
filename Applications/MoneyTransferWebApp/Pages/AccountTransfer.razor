@@ -1,0 +1,28 @@
+﻿@page "/intrawalletTransfer"
+
+<h1>S naloga na nalog</h1>
+
+    <EditForm Model="@Input" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="col-lg-12 col-sm-12">
+            <small><label for="personalId">JMBG</label></small>
+            <InputText id="personalId" class="form-control" @bind-Value=@Input.IdFrom></InputText>
+
+            <small><label for="pass">Password</label></small>
+            <InputText type="password" id="pass" class="form-control" @bind-Value=@Input.Password></InputText>
+
+            <small><label for="amount">Amount</label></small>
+            <InputNumber id="amount" class="form-control" @bind-Value=@Input.Amount></InputNumber>
+
+            <small><label for="personalIdTo">JMBG primaoca</label></small>
+            <InputText id="personalIdTo" class="form-control" @bind-Value=@Input.IdTo></InputText>
+
+            <small><label for="but">&nbsp;&nbsp;</label></small>
+            <hr />
+            <button id="but" type="submit" class="btn btn-success">Prebaci</button>
+        </div>
+    </EditForm>
+
+
