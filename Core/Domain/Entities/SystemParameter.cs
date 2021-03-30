@@ -7,8 +7,8 @@ namespace Domain.Entities
     public class SystemParameter
     {
         public int Id { get; private set; }
-        public string Name { get; set; }
-        public decimal Value { get; set; }
+        public string Name { get; private set; }
+        public decimal Value { get; private set; }
 
         public SystemParameter()
         {
@@ -19,6 +19,11 @@ namespace Domain.Entities
         {
             Name = name;
             Value = value;
+        }
+
+        public void SetValue(decimal newValue)
+        {
+            Value = newValue;
         }
     }
 }

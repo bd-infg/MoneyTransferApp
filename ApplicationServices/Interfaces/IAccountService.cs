@@ -9,5 +9,7 @@ namespace ApplicationServices.Interfaces
     public interface IAccountService
     {
         public Task<string> CreateAccount(AccountDTO accountDTO);
+        public Task<bool> AccountPayIn(AccountBankTransferDTO accountBankTransferDTO);
+        public Task<bool> AccountPayOut(AccountBankTransferDTO accountBankTransferDTO);
     }
 }

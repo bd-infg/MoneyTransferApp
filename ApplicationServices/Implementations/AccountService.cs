@@ -24,6 +24,37 @@ namespace ApplicationServices
             BankService = bankService;
         }
 
+        public async Task<bool> AccountPayIn(AccountBankTransferDTO accountBankTransferDTO)
+        {
+            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountBankTransferDTO.Id);
+            if (account == null)
+            {
+                throw new ArgumentException("Account for this person doesn't exist!");
+            }
+            if(account.Password != accountBankTransferDTO.Password)
+            {
+                throw new ArgumentException("Passwords do not match!");
+            }
+
+            var systemParameter = await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "MonthlyIncomeLimit");
+            decimal monthlyIncomeLimit = systemParameter.Value;
+            account.PayIn(accountBankTransferDTO.Amount, TransactionType.BankWithdrawalToWallet, "BankAccount", monthlyIncomeLimit);
+
+            var isValid = await BankService.Withdraw(account.Id, account.Pin);
+            if (isValid)
+            {
+                await CoreUnitOfWork.AccountRepository.Update(account);
+                await CoreUnitOfWork.SaveChangesAsync();
+            }
+
+            return isValid;
+        }
+
+        public Task<bool> AccountPayOut(AccountBankTransferDTO accountBankTransferDTO)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<string> CreateAccount(AccountDTO accountDTO)
         {
             Account account = await CoreUnitOfWork.AccountRepository.GetById(accountDTO.Id);

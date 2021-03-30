@@ -11,7 +11,7 @@ namespace MockBankService
 
         }
         static Random random = new Random();
-        public async Task<string> CheckUser(string personalId, string pin)
+        public async Task<string> CheckStatus(string personalId, string pin)
         {
             const string allowedChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
             char[] chars = new char[6];
@@ -23,6 +23,16 @@ namespace MockBankService
 
             var result = new string(chars);
             return result;
+        }
+
+        public async Task<bool> Withdraw(string personalId, string pin)
+        {
+            return true;
+        }
+
+        public async Task<bool> Deposit(string personalId, string pin)
+        {
+            return true;
         }
     }
 }

@@ -46,7 +46,7 @@ namespace Domain.Entities
             Blocked = false;
         }
 
-        public Transaction PayIn(decimal amount, TransactionType type, string accountFrom)
+        public void PayIn(decimal amount, TransactionType type, string accountFrom, decimal monthlyIncomeLimit)
         {
             Balance += amount;
             if (LastTransactionDate.Month < DateTime.Now.Month)
@@ -57,15 +57,20 @@ namespace Domain.Entities
             {
                 MonthlyIncome += amount;
             }
+            if(MonthlyIncome > monthlyIncomeLimit)
+            {
+
+                throw new MonthlyIncomeExceededException("This account would exceed the monthly income limit");
+            }
             var transaction = new Transaction(amount, accountFrom, this.Id, type, TransactionFlowType.In);
             Transactions.Add(transaction);
             LastTransactionDate = DateTime.Now;
-            return transaction;
         }
 
-        public Transaction PayOut(decimal amount, TransactionType type, string accountTo)
+        public int PayOut(decimal amount, TransactionType type, string accountTo, decimal monthlyOutcomeLimit, decimal provision)
         {
-            Balance -= amount;
+            int cnt = 0;
+            Balance -= amount+provision;
             if(Balance < 0)
             {
                 throw new AccountBalanceInsuficcientException($"Your account has insufficient funds, you need {amount - Balance} more");
@@ -78,10 +83,23 @@ namespace Domain.Entities
             {
                 MonthlyOutcome += amount;
             }
+            if (MonthlyOutcome > monthlyOutcomeLimit)
+            {
+                throw new MonthlyOutcomeExceededException("This account would exceed the monthly outcome limit");
+            }
+
             var transaction = new Transaction(amount, this.Id, accountTo, type, TransactionFlowType.Out);
             Transactions.Add(transaction);
+            cnt++;
+            if (type == TransactionType.IntraWallet)
+            {
+                var provisionTransaction = new Transaction(provision, this.Id, accountTo, TransactionType.Compensation, TransactionFlowType.Out);
+                Transactions.Add(provisionTransaction);
+                cnt++;
+            }
+
             LastTransactionDate = DateTime.Now;
-            return transaction;
+            return cnt;
         }
 
         public void Block()

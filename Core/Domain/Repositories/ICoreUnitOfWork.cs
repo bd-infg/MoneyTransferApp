@@ -7,5 +7,7 @@ namespace Domain.Repositories
         IAccountRepository AccountRepository { get; }
         ITransactionRepository TransactionRepository { get; }
 
+        ISystemParameterRepository SystemParameterRepository { get; }
+
     }
 }
