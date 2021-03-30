@@ -103,7 +103,7 @@ namespace ApplicationServiceTests
 
                 //Act
 
-                var success = await accountService.AccountPayIn("2705996887795", password, 100.00m);
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() {Id = "2705996887795", Password = password, Amount = 100.00m });
 
                 //Assert
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887795");
@@ -140,14 +140,13 @@ namespace ApplicationServiceTests
                 string password = await accountService.CreateAccount(accountDTO);
 
                 //Act
-
-                await accountService.AccountPayIn("2705996887796", password, 1000001.00m);
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887796", Password = password, Amount = 1000001.00m });
 
                 //Assert
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887796");
 
-                Assert.AreEqual(0.0m, account.Balance, "Balance must be 100");
-                Assert.AreEqual(0.0m, account.MonthlyIncome, "MonthlyIncome must be 100");
+                Assert.AreEqual(0.0m, account.Balance, "Balance must be 0");
+                Assert.AreEqual(0.0m, account.MonthlyIncome, "MonthlyIncome must be 0");
                 Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be last month");
 
 

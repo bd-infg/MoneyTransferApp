@@ -24,32 +24,33 @@ namespace ApplicationServices
             BankService = bankService;
         }
 
-        public async Task<bool> AccountPayIn(string accountId, string password, decimal value)
+        public async Task<bool> AccountPayIn(AccountBankTransferDTO accountBankTransferDTO)
         {
-            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountId);
+            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountBankTransferDTO.Id);
             if (account == null)
             {
                 throw new ArgumentException("Account for this person doesn't exist!");
             }
-            if(account.Password != password)
+            if(account.Password != accountBankTransferDTO.Password)
             {
                 throw new ArgumentException("Passwords do not match!");
             }
+
+            var systemParameter = await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "MonthlyIncomeLimit");
+            decimal monthlyIncomeLimit = systemParameter.Value;
+            account.PayIn(accountBankTransferDTO.Amount, TransactionType.BankWithdrawalToWallet, "BankAccount", monthlyIncomeLimit);
+
             var isValid = await BankService.Withdraw(account.Id, account.Pin);
             if (isValid)
             {
-                var systemParameter = await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "MonthlyIncomeLimit");
-                decimal monthlyIncomeLimit = systemParameter.Value;
-                account.PayIn(value, TransactionType.BankWithdrawalToWallet, "BankAccount", monthlyIncomeLimit);
+                await CoreUnitOfWork.AccountRepository.Update(account);
+                await CoreUnitOfWork.SaveChangesAsync();
             }
-
-            await CoreUnitOfWork.AccountRepository.Update(account);
-            await CoreUnitOfWork.SaveChangesAsync();
 
             return isValid;
         }
 
-        public Task<bool> AccountPayOut(string accountId, string password, decimal value)
+        public Task<bool> AccountPayOut(AccountBankTransferDTO accountBankTransferDTO)
         {
             throw new NotImplementedException();
         }
