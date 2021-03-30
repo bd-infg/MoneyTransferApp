@@ -48,49 +48,54 @@ namespace Domain.Entities
 
         public void PayIn(decimal amount, TransactionType type, string accountFrom, decimal monthlyIncomeLimit)
         {
-            Balance += amount;
-            if (LastTransactionDate.Month < DateTime.Now.Month)
+            decimal newMonthlyIncome;
+            if (LastTransactionDate < DateTime.Now && LastTransactionDate.Month < DateTime.Now.Month)
             {
-                MonthlyIncome = amount;
+                newMonthlyIncome = amount;
             }
             else
             {
-                MonthlyIncome += amount;
+                newMonthlyIncome = MonthlyIncome + amount;
             }
-            if(MonthlyIncome > monthlyIncomeLimit)
+            if(newMonthlyIncome > monthlyIncomeLimit)
             {
-
                 throw new MonthlyIncomeExceededException("This account would exceed the monthly income limit");
             }
+            MonthlyIncome = newMonthlyIncome;
+            Balance += amount;
             var transaction = new Transaction(amount, accountFrom, this.Id, type, TransactionFlowType.In);
             Transactions.Add(transaction);
             LastTransactionDate = DateTime.Now;
         }
 
-        public int PayOut(decimal amount, TransactionType type, string accountTo, decimal monthlyOutcomeLimit, decimal provision)
+        public int PayOut(decimal amount, TransactionType type, string accountTo, decimal monthlyOutcomeLimit, decimal provision = 0.0m)
         {
-            int cnt = 0;
-            Balance -= amount+provision;
-            if(Balance < 0)
+            decimal newMonthlyOutcome;
+            if (LastTransactionDate < DateTime.Now && LastTransactionDate.Month < DateTime.Now.Month)
             {
-                throw new AccountBalanceInsuficcientException($"Your account has insufficient funds, you need {amount - Balance} more");
-            }
-            if (LastTransactionDate.Month < DateTime.Now.Month)
-            {
-                MonthlyOutcome = amount;
+                newMonthlyOutcome = amount;
             }
             else
             {
-                MonthlyOutcome += amount;
+                newMonthlyOutcome = MonthlyOutcome + amount;
             }
-            if (MonthlyOutcome > monthlyOutcomeLimit)
+            if (newMonthlyOutcome > monthlyOutcomeLimit)
             {
                 throw new MonthlyOutcomeExceededException("This account would exceed the monthly outcome limit");
+            }
+
+            MonthlyOutcome = newMonthlyOutcome;
+            int cnt = 0;
+            Balance -= amount + provision;
+            if (Balance < 0)
+            {
+                throw new AccountBalanceInsuficcientException($"Your account has insufficient funds, you need {amount - Balance} more");
             }
 
             var transaction = new Transaction(amount, this.Id, accountTo, type, TransactionFlowType.Out);
             Transactions.Add(transaction);
             cnt++;
+
             if (type == TransactionType.IntraWallet)
             {
                 var provisionTransaction = new Transaction(provision, this.Id, accountTo, TransactionType.Compensation, TransactionFlowType.Out);

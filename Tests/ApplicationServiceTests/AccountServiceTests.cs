@@ -44,7 +44,7 @@ namespace ApplicationServiceTests
                 //Arrange
                 AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
                 var accountDTO = new AccountDTO() {
-                    Id = "2705996887794",
+                    Id = "2705996887790",
                     FirstName = "Dejan",
                     LastName = "Boskovic",
                     Bank = 105,
@@ -57,10 +57,10 @@ namespace ApplicationServiceTests
                 string password = await accountService.CreateAccount(accountDTO);
 
                 //Assert
-                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887794");
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887790");
        
                 Assert.AreNotEqual(null, account, "Account must not be null");
-                Assert.AreEqual("2705996887794", account.Id, "Id must be '2705996887794'");
+                Assert.AreEqual("2705996887790", account.Id, "Id must be '2705996887790'");
                 Assert.AreEqual("Dejan", account.FirstName, "FirstName must be Dejan");
                 Assert.AreEqual("Boskovic", account.LastName, "LastName must be Boskovic");
                 Assert.AreEqual(105, (int)account.Bank, "Bank must be 105");
@@ -91,7 +91,7 @@ namespace ApplicationServiceTests
                 AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
                 var accountDTO = new AccountDTO()
                 {
-                    Id = "2705996887795",
+                    Id = "2705996887791",
                     FirstName = "Dejan",
                     LastName = "Boskovic",
                     Bank = 105,
@@ -103,14 +103,53 @@ namespace ApplicationServiceTests
 
                 //Act
 
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() {Id = "2705996887795", Password = password, Amount = 100.00m });
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() {Id = "2705996887791", Password = password, Amount = 100.00m });
 
                 //Assert
-                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887795");
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887791");
                 Assert.AreEqual(success, true, "PayIn must be successful");
                 Assert.AreEqual(100.0m, account.Balance, "Balance must be 100");
                 Assert.AreEqual(100.0m, account.MonthlyIncome, "MonthlyIncome must be 100");
-                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be last month");
+                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Unexpected error: " + ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestAccountMultiplePayIn()
+        {
+            try
+            {
+                //Arrange
+                AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
+                var accountDTO = new AccountDTO()
+                {
+                    Id = "2705996887792",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                string password = await accountService.CreateAccount(accountDTO);
+
+                //Act
+
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887792", Password = password, Amount = 100.00m });
+                success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887792", Password = password, Amount = 50.00m });
+
+                //Assert
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887792");
+                Assert.AreEqual(success, true, "PayIn must be successful");
+                Assert.AreEqual(150.0m, account.Balance, "Balance must be 150");
+                Assert.AreEqual(150.0m, account.MonthlyIncome, "MonthlyIncome must be 150");
+                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
 
 
             }
@@ -129,7 +168,7 @@ namespace ApplicationServiceTests
                 AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
                 var accountDTO = new AccountDTO()
                 {
-                    Id = "2705996887796",
+                    Id = "2705996887793",
                     FirstName = "Dejan",
                     LastName = "Boskovic",
                     Bank = 105,
@@ -140,20 +179,137 @@ namespace ApplicationServiceTests
                 string password = await accountService.CreateAccount(accountDTO);
 
                 //Act
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887796", Password = password, Amount = 1000001.00m });
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887793", Password = password, Amount = 1000001.00m });
 
                 //Assert
-                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887796");
-
-                Assert.AreEqual(0.0m, account.Balance, "Balance must be 0");
-                Assert.AreEqual(0.0m, account.MonthlyIncome, "MonthlyIncome must be 0");
-                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be last month");
-
+                
 
             }
             catch (MonthlyIncomeExceededException exceed)
             {
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887793");
+                Assert.AreEqual(0.0m, account.Balance, "Balance must be 0");
+                Assert.AreEqual(0.0m, account.MonthlyIncome, "MonthlyIncome must be 0");
+                Assert.AreEqual(DateTime.Now.Date.AddMonths(-1), account.LastTransactionDate.Date, "LastTransactionDate must be last month");
                 Assert.AreEqual(exceed.Message, "This account would exceed the monthly income limit");
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Unexpected error: " + ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestAccountPayOut()
+        {
+            try
+            {
+                //Arrange
+                AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
+                var accountDTO = new AccountDTO()
+                {
+                    Id = "2705996887794",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                string password = await accountService.CreateAccount(accountDTO);
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887794", Password = password, Amount = 100.00m });
+
+                //Act
+                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887794", Password = password, Amount = 50.00m });
+
+                //Assert
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887794");
+                Assert.AreEqual(success, true, "PayOut must be successful");
+                Assert.AreEqual(50.0m, account.Balance, "Balance must be 50");
+                Assert.AreEqual(100.0m, account.MonthlyIncome, "MonthlyIncome must be 100");
+                Assert.AreEqual(50.0m, account.MonthlyOutcome, "MonthlyOutcome must be 50");
+                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Unexpected error: " + ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestAccountPayOutMultiple()
+        {
+            try
+            {
+                //Arrange
+                AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
+                var accountDTO = new AccountDTO()
+                {
+                    Id = "2705996887895",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                string password = await accountService.CreateAccount(accountDTO);
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887895", Password = password, Amount = 100.00m });
+
+                //Act
+                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887895", Password = password, Amount = 50.00m });
+                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887895", Password = password, Amount = 25.00m });
+
+                //Assert
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887895");
+                Assert.AreEqual(success, true, "PayOut must be successful");
+                Assert.AreEqual(25.0m, account.Balance, "Balance must be 25");
+                Assert.AreEqual(100.0m, account.MonthlyIncome, "MonthlyIncome must be 100");
+                Assert.AreEqual(75.0m, account.MonthlyOutcome, "MonthlyOutcome must be 75");
+                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Unexpected error: " + ex.Message);
+            }
+        }
+
+        [TestMethod]
+        public async Task TestAccountPayOutExceed()
+        {
+            try
+            {
+                //Arrange
+                AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
+                var accountDTO = new AccountDTO()
+                {
+                    Id = "2705996887796",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                string password = await accountService.CreateAccount(accountDTO);
+                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887796", Password = password, Amount = 100.00m });
+
+                //Act
+                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887796", Password = password, Amount = 1000001.00m });             
+
+            }
+            catch (MonthlyOutcomeExceededException exceed)
+            {
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887796");
+                Assert.AreEqual(100.0m, account.Balance, "Balance must be 100");
+                Assert.AreEqual(0.0m, account.MonthlyOutcome, "MonthlyOutcome must be 0");
+                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+                Assert.AreEqual(exceed.Message, "This account would exceed the monthly outcome limit");
+
             }
             catch (Exception ex)
             {

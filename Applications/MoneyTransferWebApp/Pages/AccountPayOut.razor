@@ -1,6 +1,6 @@
-﻿@page "/accountPayIn"
+﻿@page "/accountPayOut"
 
-<h1>S bankovnog računa na nalog</h1>
+<h1>S naloga na bankovni račun</h1>
 
     <EditForm Model="@Input" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
@@ -18,7 +18,7 @@
 
             <small><label for="but">&nbsp;&nbsp;</label></small>
             <hr />
-            <button id="but" type="submit" class="btn btn-success">Uplati</button>
+            <button id="but" type="submit" class="btn btn-success">Isplati</button>
         </div>
     </EditForm>
 

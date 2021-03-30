@@ -35,6 +35,10 @@ namespace ApplicationServices
             {
                 throw new ArgumentException("Passwords do not match!");
             }
+            if (account.Blocked)
+            {
+                throw new ArgumentException("This account is blocked!");
+            }
 
             var systemParameter = await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "MonthlyIncomeLimit");
             decimal monthlyIncomeLimit = systemParameter.Value;
@@ -50,9 +54,34 @@ namespace ApplicationServices
             return isValid;
         }
 
-        public Task<bool> AccountPayOut(AccountBankTransferDTO accountBankTransferDTO)
+        public async Task<bool> AccountPayOut(AccountBankTransferDTO accountBankTransferDTO)
         {
-            throw new NotImplementedException();
+            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountBankTransferDTO.Id);
+            if (account == null)
+            {
+                throw new ArgumentException("Account for this person doesn't exist!");
+            }
+            if (account.Password != accountBankTransferDTO.Password)
+            {
+                throw new ArgumentException("Passwords do not match!");
+            }
+            if (account.Blocked)
+            {
+                throw new ArgumentException("This account is blocked!");
+            }
+
+            var systemParameter = await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "MonthlyOutcomeLimit");
+            decimal monthlyOutcomeLimit = systemParameter.Value;
+            account.PayOut(accountBankTransferDTO.Amount, TransactionType.BankDepositFromWallet, "BankAccount", monthlyOutcomeLimit);
+
+            var isValid = await BankService.Deposit(account.Id, account.Pin);
+            if (isValid)
+            {
+                await CoreUnitOfWork.AccountRepository.Update(account);
+                await CoreUnitOfWork.SaveChangesAsync();
+            }
+
+            return isValid;
         }
 
         public async Task<string> CreateAccount(AccountDTO accountDTO)
