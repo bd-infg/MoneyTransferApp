@@ -15,6 +15,7 @@ namespace EFCoreDataAccess.EntityConfigurations
             modelBuilder.Property(a => a.Amount).HasPrecision(12, 2);
             modelBuilder.Property(a => a.FromAccountId).HasMaxLength(13);
             modelBuilder.Property(a => a.ToAccountId).HasMaxLength(13);
+            modelBuilder.Property(a => a.DateTime).HasColumnType("datetime");
         }
     }
 }

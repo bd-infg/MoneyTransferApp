@@ -5,6 +5,7 @@ using Domain.Repositories;
 using Domain.Services.External.BankService;
 using Enums;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace ApplicationServices
             BankService = bankService;
         }
 
-        public async Task<bool> AccountPayIn(AccountBankTransferDTO accountBankTransferDTO)
+        public async Task<bool> AccountPayIn(AccountRequestDTO accountBankTransferDTO)
         {
             Account account = await CoreUnitOfWork.AccountRepository.GetById(accountBankTransferDTO.Id);
             if (account == null)
@@ -54,7 +55,7 @@ namespace ApplicationServices
             return isValid;
         }
 
-        public async Task<bool> AccountPayOut(AccountBankTransferDTO accountBankTransferDTO)
+        public async Task<bool> AccountPayOut(AccountRequestDTO accountBankTransferDTO)
         {
             Account account = await CoreUnitOfWork.AccountRepository.GetById(accountBankTransferDTO.Id);
             if (account == null)
@@ -129,6 +130,60 @@ namespace ApplicationServices
 
             return account.Password;
             
+        }
+
+        public async Task<AccountBalanceOverviewDTO> GetAccountBalance(AccountRequestDTO accountRequestDTO)
+        {
+            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountRequestDTO.Id);
+            if (account == null)
+            {
+                throw new ArgumentException("Account for this person doesn't exist!");
+            }
+            if (account.Password != accountRequestDTO.Password)
+            {
+                throw new ArgumentException("Passwords do not match!");
+            }
+
+            var result = new AccountBalanceOverviewDTO();
+
+            result.Balance = account.Balance;
+            result.Blocked = account.Blocked;
+            result.MonthlyIncome = account.MonthlyIncome;
+            result.MonthlyOutcome = account.MonthlyOutcome;
+
+            return result;
+        }
+
+        public async Task<ICollection<TransactionDTO>> GetAccountTransactions(AccountRequestDTO accountRequestDTO)
+        {
+            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountRequestDTO.Id);
+            if (account == null)
+            {
+                throw new ArgumentException("Account for this person doesn't exist!");
+            }
+            if (account.Password != accountRequestDTO.Password)
+            {
+                throw new ArgumentException("Passwords do not match!");
+            }
+
+            var result = new List<TransactionDTO>();
+
+            var transactions = await CoreUnitOfWork.TransactionRepository.GetFilteredList(t =>
+            (
+            (t.FromAccountId == accountRequestDTO.Id && t.ToAccountId == "BankAccount") ||
+            (t.FromAccountId == "BankAccount" && t.ToAccountId == accountRequestDTO.Id) ||
+            (t.FromAccountId == accountRequestDTO.Id && t.ToAccountId == "System") ||
+            (t.FromAccountId == accountRequestDTO.Id && t.Flow == TransactionFlowType.Out) ||
+            (t.ToAccountId == accountRequestDTO.Id && t.Flow == TransactionFlowType.In)
+            )
+            );
+
+
+            foreach(var transaction in transactions)
+            {
+                result.Add(new TransactionDTO() { Amount = transaction.Amount, Flow = (byte)transaction.Flow, Type = (byte)transaction.Type, FromAccountId = transaction.FromAccountId, ToAccountId = transaction.ToAccountId, DateTime = transaction.DateTime });
+            }
+            return result;
         }
 
         public async Task<bool> IntraWalletTransfer(IntraWalletTransferDTO intraWalletTransferDTO)

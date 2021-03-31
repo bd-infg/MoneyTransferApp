@@ -103,7 +103,7 @@ namespace ApplicationServiceTests
 
                 //Act
 
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() {Id = "2705996887791", Password = password, Amount = 100.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() {Id = "2705996887791", Password = password, Amount = 100.00m });
 
                 //Assert
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887791");
@@ -141,8 +141,8 @@ namespace ApplicationServiceTests
 
                 //Act
 
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887792", Password = password, Amount = 100.00m });
-                success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887792", Password = password, Amount = 50.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887792", Password = password, Amount = 100.00m });
+                success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887792", Password = password, Amount = 50.00m });
 
                 //Assert
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887792");
@@ -179,7 +179,7 @@ namespace ApplicationServiceTests
                 string password = await accountService.CreateAccount(accountDTO);
 
                 //Act
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887793", Password = password, Amount = 1000001.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887793", Password = password, Amount = 1000001.00m });
 
                 //Assert
                 
@@ -217,10 +217,10 @@ namespace ApplicationServiceTests
                 };
 
                 string password = await accountService.CreateAccount(accountDTO);
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887794", Password = password, Amount = 100.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887794", Password = password, Amount = 100.00m });
 
                 //Act
-                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887794", Password = password, Amount = 50.00m });
+                success = await accountService.AccountPayOut(new AccountRequestDTO() { Id = "2705996887794", Password = password, Amount = 50.00m });
 
                 //Assert
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887794");
@@ -256,11 +256,11 @@ namespace ApplicationServiceTests
                 };
 
                 string password = await accountService.CreateAccount(accountDTO);
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887895", Password = password, Amount = 100.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887895", Password = password, Amount = 100.00m });
 
                 //Act
-                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887895", Password = password, Amount = 50.00m });
-                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887895", Password = password, Amount = 25.00m });
+                success = await accountService.AccountPayOut(new AccountRequestDTO() { Id = "2705996887895", Password = password, Amount = 50.00m });
+                success = await accountService.AccountPayOut(new AccountRequestDTO() { Id = "2705996887895", Password = password, Amount = 25.00m });
 
                 //Assert
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887895");
@@ -296,10 +296,10 @@ namespace ApplicationServiceTests
                 };
 
                 string password = await accountService.CreateAccount(accountDTO);
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887796", Password = password, Amount = 100.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887796", Password = password, Amount = 100.00m });
 
                 //Act
-                success = await accountService.AccountPayOut(new AccountBankTransferDTO() { Id = "2705996887796", Password = password, Amount = 1000001.00m });             
+                success = await accountService.AccountPayOut(new AccountRequestDTO() { Id = "2705996887796", Password = password, Amount = 1000001.00m });             
 
             }
             catch (MonthlyOutcomeExceededException exceed)
@@ -346,7 +346,7 @@ namespace ApplicationServiceTests
 
                 string password1 = await accountService.CreateAccount(accountDTO1);
                 string password2 = await accountService.CreateAccount(accountDTO2);
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887797", Password = password1, Amount = 200.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887797", Password = password1, Amount = 200.00m });
 
                 //Act
                 await accountService.IntraWalletTransfer(new IntraWalletTransferDTO() { Amount = 100.00m, IdFrom = "2705996887797", IdTo = "2705996887798", Password = password1 }) ;
@@ -397,7 +397,7 @@ namespace ApplicationServiceTests
 
                 string password1 = await accountService.CreateAccount(accountDTO1);
                 string password2 = await accountService.CreateAccount(accountDTO2);
-                var success = await accountService.AccountPayIn(new AccountBankTransferDTO() { Id = "2705996887799", Password = password1, Amount = 20000.00m });
+                var success = await accountService.AccountPayIn(new AccountRequestDTO() { Id = "2705996887799", Password = password1, Amount = 20000.00m });
 
                 //Act
                 await accountService.IntraWalletTransfer(new IntraWalletTransferDTO() { Amount = 15000.00m, IdFrom = "2705996887799", IdTo = "2705996887700", Password = password1 });

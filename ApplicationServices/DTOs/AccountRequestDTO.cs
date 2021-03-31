@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ApplicationServices.DTOs
 {
-    public class AccountBankTransferDTO
+    public class AccountRequestDTO
     {
         public string Id { get; set; }
         public string Password { get; set; }

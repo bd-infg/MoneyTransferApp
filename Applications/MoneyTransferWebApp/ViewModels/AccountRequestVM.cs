@@ -8,7 +8,7 @@ using Enums;
 
 namespace MoneyTransferWebApp.ViewModels
 {
-    public class AccountBankTransferVM
+    public class AccountRequestVM
     { 
         [Required]
         [StringLength(13, ErrorMessage = "JMBG mora da ima 13 cifara")]
@@ -19,9 +19,9 @@ namespace MoneyTransferWebApp.ViewModels
         [Required]
         public decimal Amount { get; set; }
 
-        public AccountBankTransferDTO ToDTO()
+        public AccountRequestDTO ToDTO()
         {
-            var dto = new AccountBankTransferDTO()
+            var dto = new AccountRequestDTO()
             {
                 Id = this.Id,
                 Password = this.Password,

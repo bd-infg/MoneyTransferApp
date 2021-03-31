@@ -19,7 +19,7 @@ namespace MoneyTransferWebApp.Pages
         [Inject]
         public IToastService ToastService { get; private set; }
         
-        public AccountBankTransferVM Input { get; private set; } = new AccountBankTransferVM();
+        public AccountRequestVM Input { get; private set; } = new AccountRequestVM();
 
         protected async Task HandleValidSubmit()
         {
@@ -29,7 +29,7 @@ namespace MoneyTransferWebApp.Pages
                 if (response)
                 {
                     ToastService.ShowSuccess("Novac je uplaćen na račun", "Uspeh!");
-                    Input = new AccountBankTransferVM();
+                    Input = new AccountRequestVM();
                 }
                 else
                 {

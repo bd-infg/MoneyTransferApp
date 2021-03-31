@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using System;
+
+namespace Domain.Entities
 {
     public class Transaction
     {
@@ -8,6 +10,7 @@
         public string ToAccountId { get; private set; }
         public TransactionType Type { get; private set; }
         public TransactionFlowType Flow { get; private set; }
+        public DateTime DateTime { get; private set; }
 
         public Transaction()
         {
@@ -21,6 +24,7 @@
             ToAccountId = toAccount;
             Type = type;
             Flow = flow;
+            DateTime = DateTime.Now;
         }
     }
 }
