@@ -116,5 +116,10 @@ namespace Domain.Entities
         {
             Blocked = false;
         }
+
+        public void SetPassword(string password)
+        {
+            Password = password;
+        }
     }
 }

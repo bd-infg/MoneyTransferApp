@@ -85,6 +85,28 @@ namespace ApplicationServices
             return isValid;
         }
 
+        public async Task ChangePassword(AccountPasswordRequestDTO accountPasswordRequestDTO)
+        {
+            Account account = await CoreUnitOfWork.AccountRepository.GetById(accountPasswordRequestDTO.Id);
+            if (account == null)
+            {
+                throw new ArgumentException("Account for this person doesn't exist!");
+            }
+            if (account.Password != accountPasswordRequestDTO.OldPassword)
+            {
+                throw new ArgumentException("Passwords do not match!");
+            }
+            if (account.Blocked)
+            {
+                throw new ArgumentException("This account is blocked!");
+            }
+
+            account.SetPassword(accountPasswordRequestDTO.NewPassword);
+
+            await CoreUnitOfWork.AccountRepository.Update(account);
+            await CoreUnitOfWork.SaveChangesAsync();
+        }
+
         public async Task<string> CreateAccount(AccountDTO accountDTO)
         {
             Account account = await CoreUnitOfWork.AccountRepository.GetById(accountDTO.Id);

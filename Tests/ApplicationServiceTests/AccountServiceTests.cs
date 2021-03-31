@@ -418,5 +418,40 @@ namespace ApplicationServiceTests
                 Assert.Fail("Unexpected error: " + ex.Message);
             }
         }
+
+        [TestMethod]
+        public async Task TestAccountPasswordChange()
+        {
+            try
+            {
+                //Arrange
+                AccountService accountService = new AccountService(_coreUnitOfWork, _bankService);
+                var accountDTO = new AccountDTO()
+                {
+                    Id = "2705996887701",
+                    FirstName = "Dejan",
+                    LastName = "Boskovic",
+                    Bank = 105,
+                    Pin = "1447",
+                    AccountNumber = "105147852369878985"
+                };
+
+                string password = await accountService.CreateAccount(accountDTO);
+
+                //Act
+
+                await accountService.ChangePassword(new AccountPasswordRequestDTO() { Id = "2705996887701", OldPassword = password, NewPassword = "aaaaaa" });
+
+                //Assert
+                Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887701");
+                Assert.AreEqual("aaaaaa", account.Password, "Password must be 'aaaaaa'");
+
+
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("Unexpected error: " + ex.Message);
+            }
+        }
     }
 }
