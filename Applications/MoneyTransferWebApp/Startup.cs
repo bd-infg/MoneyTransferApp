@@ -46,6 +46,8 @@ namespace MoneyTransferWebApp
             services.AddScoped<EFCoreUnitOfWork, CoreEFCoreUnitOfWork>();
             services.AddScoped<IBankService, BankService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<ISystemParameterService, SystemParameterService>();
             services.AddBlazoredToast();
 
             services.AddScoped((IServiceProvider serviceProvider) =>

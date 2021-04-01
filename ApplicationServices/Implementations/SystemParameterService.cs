@@ -4,6 +4,7 @@ using Domain.Entities;
 using Domain.Repositories;
 using Enums;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ApplicationServices
@@ -50,6 +51,19 @@ namespace ApplicationServices
             await CoreUnitOfWork.SaveChangesAsync();
         }
 
+        public async Task<ICollection<SystemParameterDTO>> GetSystemParameters()
+        {
+            var result = new List<SystemParameterDTO>();
+
+            var systemParameters = await CoreUnitOfWork.SystemParameterRepository.GetAllList();
+
+
+            foreach (var sysParam in systemParameters)
+            {
+                result.Add(new SystemParameterDTO() { Id = sysParam.Id, Name = sysParam.Name, Value = sysParam.Value });
+            }
+            return result;
+        }
 
     }
 }

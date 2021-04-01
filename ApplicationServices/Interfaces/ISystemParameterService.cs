@@ -10,6 +10,7 @@ namespace ApplicationServices.Interfaces
     {
         public Task<int> AddNewSystemParameter(SystemParameterDTO systemParameterDTO);
         public Task ChangeSystemParameter(int id, decimal newValue);
+        public Task<ICollection<SystemParameterDTO>> GetSystemParameters();
 
     }
 }
