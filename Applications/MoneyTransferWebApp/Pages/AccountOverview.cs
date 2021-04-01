@@ -20,7 +20,7 @@ namespace MoneyTransferWebApp.Pages
         [Inject]
         public IToastService ToastService { get; private set; }
         
-        public AccountRequestVM Input { get; private set; } = new AccountRequestVM();
+        public AccountOverviewRequestVM Input { get; private set; } = new AccountOverviewRequestVM();
         public ICollection<TransactionDTO> Transactions { get; private set; }
 
         public AccountBalanceOverviewDTO AccountBalance { get; private set; }

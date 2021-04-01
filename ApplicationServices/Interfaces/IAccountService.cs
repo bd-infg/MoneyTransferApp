@@ -12,8 +12,8 @@ namespace ApplicationServices.Interfaces
         public Task<bool> AccountPayIn(AccountRequestDTO accountBankTransferDTO);
         public Task<bool> AccountPayOut(AccountRequestDTO accountBankTransferDTO);
         public Task<bool> IntraWalletTransfer(IntraWalletTransferDTO intraWalletTransferDTO);
-        public Task<AccountBalanceOverviewDTO> GetAccountBalance(AccountRequestDTO accountRequestDTO);
-        public Task<ICollection<TransactionDTO>> GetAccountTransactions(AccountRequestDTO accountRequestDTO);
+        public Task<AccountBalanceOverviewDTO> GetAccountBalance(AccountOverviewRequestDTO accountRequestDTO);
+        public Task<ICollection<TransactionDTO>> GetAccountTransactions(AccountOverviewRequestDTO accountRequestDTO);
         public Task ChangePassword(AccountPasswordRequestDTO accountPasswordRequestDTO);
     }
 }
