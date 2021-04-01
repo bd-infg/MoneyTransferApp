@@ -154,7 +154,7 @@ namespace ApplicationServices
             
         }
 
-        public async Task<AccountBalanceOverviewDTO> GetAccountBalance(AccountRequestDTO accountRequestDTO)
+        public async Task<AccountBalanceOverviewDTO> GetAccountBalance(AccountOverviewRequestDTO accountRequestDTO)
         {
             Account account = await CoreUnitOfWork.AccountRepository.GetById(accountRequestDTO.Id);
             if (account == null)
@@ -176,7 +176,7 @@ namespace ApplicationServices
             return result;
         }
 
-        public async Task<ICollection<TransactionDTO>> GetAccountTransactions(AccountRequestDTO accountRequestDTO)
+        public async Task<ICollection<TransactionDTO>> GetAccountTransactions(AccountOverviewRequestDTO accountRequestDTO)
         {
             Account account = await CoreUnitOfWork.AccountRepository.GetById(accountRequestDTO.Id);
             if (account == null)
@@ -192,11 +192,15 @@ namespace ApplicationServices
 
             var transactions = await CoreUnitOfWork.TransactionRepository.GetFilteredList(t =>
             (
+            (
             (t.FromAccountId == accountRequestDTO.Id && t.ToAccountId == "BankAccount") ||
             (t.FromAccountId == "BankAccount" && t.ToAccountId == accountRequestDTO.Id) ||
             (t.FromAccountId == accountRequestDTO.Id && t.ToAccountId == "System") ||
             (t.FromAccountId == accountRequestDTO.Id && t.Flow == TransactionFlowType.Out) ||
             (t.ToAccountId == accountRequestDTO.Id && t.Flow == TransactionFlowType.In)
+            )
+            &&
+            t.DateTime.Date == accountRequestDTO.Date.Date
             )
             );
 
