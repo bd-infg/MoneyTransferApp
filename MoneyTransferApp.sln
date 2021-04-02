@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServices", "Appl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServiceTests", "Tests\ApplicationServiceTests\ApplicationServiceTests.csproj", "{80C09BC1-0CC2-43A7-941E-FBE55C67ABCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums", "Common\Enums\Enums\Enums.csproj", "{3E559218-C4CF-47BA-9573-5953490EAD2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums", "Common\Enums\Enums\Enums.csproj", "{3E559218-C4CF-47BA-9573-5953490EAD2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

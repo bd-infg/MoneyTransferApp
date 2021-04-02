@@ -44,11 +44,25 @@ namespace ApplicationServices
             {
                 throw new ArgumentException("System parameter with this id doesn't exist");
             }
-
+            if(systemParameter.Name == "ProvisionOverLimitCostPercent" || systemParameter.Name == "BonusDaysOnCreate" || systemParameter.Name == "BonusTransfersPerMonth")
+            {
+                newValue = Math.Round(newValue);
+            }
             systemParameter.SetValue(newValue);
 
             await CoreUnitOfWork.SystemParameterRepository.Update(systemParameter);
             await CoreUnitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<SystemParameterDTO> GetSystemParameterById(int id)
+        {
+            var systemParam = await CoreUnitOfWork.SystemParameterRepository.GetById(id);
+            if (systemParam == null)
+            {
+                throw new ArgumentException("System parameter with this id doesn't exist");
+            }
+
+            return new SystemParameterDTO() { Id = systemParam.Id, Name = systemParam.Name, Value = systemParam.Value };
         }
 
         public async Task<ICollection<SystemParameterDTO>> GetSystemParameters()
