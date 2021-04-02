@@ -1,0 +1,15 @@
+﻿<div class="simple-form">
+
+    <div class="form-group">
+        <label for="movie-name">Naziv</label>
+        <input disabled @bind="@SystemParameter.Name" type="text" class="form-control" id="movie-name" />
+    </div>
+
+    <div class="form-group">
+        <label for="year">Vrednost</label>
+        <input @bind="@SystemParameter.Value" type="number" class="form-control" id="year" />
+    </div>
+
+    <button @onclick="SaveParameter" class="btn btn-primary">Submit</button>
+    
+</div>

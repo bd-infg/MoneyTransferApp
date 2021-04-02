@@ -6,6 +6,7 @@ namespace ApplicationServices.DTOs
 {
     public class SystemParameterDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public decimal Value { get; set; }
     }

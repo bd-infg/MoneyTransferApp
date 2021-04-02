@@ -1,0 +1,84 @@
+﻿@page "/accountManagement"
+
+<h1>Menadžment računa</h1>
+<EditForm Model="@InputPassword" OnValidSubmit="@CheckAdmin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-lg-12 col-sm-12">
+
+        <small><label for="pass">Admin Password</label></small>
+        <InputText type="password" id="pass" class="form-control" @bind-Value=@InputPassword.Data></InputText>
+
+        <hr />
+        <small><label for="but">&nbsp;&nbsp;</label></small>
+        <button id="but" type="submit" class="btn btn-success">Login</button>
+    </div>
+    <hr />
+</EditForm>
+@if (AdminLogged)
+{
+<div class="row col-lg-12 col-sm-12">
+
+    <div class="col-lg-6 col-sm-6">
+        <EditForm Model="@InputIdForBlock" OnValidSubmit="@BlockAccount">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+
+            <small><label for="blockId">Id</label></small>
+            <InputText id="blockId" class="form-control" @bind-Value=@InputIdForBlock.Data></InputText>
+
+            <hr />
+            <button id="butB" type="submit" class="btn btn-success">Blokiraj</button>
+        </EditForm>
+    </div>
+
+    <div class="col-lg-6 col-sm-6">
+        <EditForm Model="@InputIdForUnblock" OnValidSubmit="@UnblockAccount">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+
+                <small><label for="unblockId">Id</label></small>
+                <InputText id="unblockId" class="form-control" @bind-Value=@InputIdForUnblock.Data></InputText>
+
+                <hr />
+                <button id="butUb" type="submit" class="btn btn-success">Odblokiraj</button>
+        </EditForm>
+    </div>
+</div>
+<hr />
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Redni broj</th>
+                <th scope="col">Naziv parametra</th>
+                <th scope="col">Vrednost</th>
+                <th scope="col">&nbsp;</th>
+            </tr>
+        </thead>
+        @if (SystemParameterDTOs != null)
+        {
+            int num = 1;
+            <tbody>
+                @foreach (var item in SystemParameterDTOs)
+                {
+                    <tr>
+                        <td>@num</td>
+                        <td>@item.Name</td>
+                        <td>@item.Value</td>
+                        <td><button id="butUb" type="button" @onclick="@(() => ChooseParameter(@item.Id))" class="btn btn-success">Promeni</button></td>
+                    </tr>
+                    num = num + 1;
+                }
+            </tbody>
+
+        }
+    </table>
+</div>
+}
+
+
+

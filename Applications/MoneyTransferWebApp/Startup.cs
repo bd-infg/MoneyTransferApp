@@ -1,5 +1,6 @@
 using ApplicationServices;
 using ApplicationServices.Interfaces;
+using Blazored.Modal;
 using Blazored.Toast;
 using Common.EFCoreDataAccess;
 using Domain.Repositories;
@@ -46,7 +47,10 @@ namespace MoneyTransferWebApp
             services.AddScoped<EFCoreUnitOfWork, CoreEFCoreUnitOfWork>();
             services.AddScoped<IBankService, BankService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<ISystemParameterService, SystemParameterService>();
             services.AddBlazoredToast();
+            services.AddBlazoredModal();
 
             services.AddScoped((IServiceProvider serviceProvider) =>
             {
