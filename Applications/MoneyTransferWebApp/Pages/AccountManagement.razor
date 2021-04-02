@@ -1,0 +1,55 @@
+﻿@page "/accountManagement"
+
+<h1>Menadžment računa</h1>
+<EditForm Model="@InputPassword" OnValidSubmit="@CheckAdmin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-lg-12 col-sm-12">
+
+        <small><label for="pass">Admin Password</label></small>
+        <InputText type="password" id="pass" class="form-control" @bind-Value=@InputPassword.Data></InputText>
+
+        <hr />
+        <small><label for="but">&nbsp;&nbsp;</label></small>
+        <button id="but" type="submit" class="btn btn-success">Login</button>
+    </div>
+    <hr />
+</EditForm>
+@if (AdminLogged)
+{
+<div class="row col-lg-12 col-sm-12">
+
+    <div class="col-lg-6 col-sm-6">
+        <EditForm Model="@InputIdForBlock" OnValidSubmit="@BlockAccount">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+
+            <small><label for="blockId">Id</label></small>
+            <InputText id="blockId" class="form-control" @bind-Value=@InputIdForBlock.Data></InputText>
+
+            <hr />
+            <button id="butB" type="submit" class="btn btn-success">Block</button>
+        </EditForm>
+    </div>
+
+    <div class="col-lg-6 col-sm-6">
+        <EditForm Model="@InputIdForUnblock" OnValidSubmit="@UnblockAccount">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+
+                <small><label for="unblockId">Id</label></small>
+                <InputText id="unblockId" class="form-control" @bind-Value=@InputIdForUnblock.Data></InputText>
+
+                <hr />
+                <button id="butUb" type="submit" class="btn btn-success">Unblock</button>
+        </EditForm>
+    </div>
+</div>
+
+}
+
+
+
