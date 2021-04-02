@@ -72,8 +72,9 @@ namespace ApplicationServices
             }
 
             decimal monthlyOutcomeLimit = (await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "MonthlyOutcomeLimit")).Value;
-
-            account.PayOut(accountBankTransferDTO.Amount, TransactionType.BankDepositFromWallet, "BankAccount", monthlyOutcomeLimit);
+            int bonusDaysOnCreate = Decimal.ToInt32((await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "BonusDaysOnCreate")).Value);
+            int bonusTransfersPerMonth = Decimal.ToInt32((await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "BonusTransfersPerMonth")).Value);
+            account.PayOut(accountBankTransferDTO.Amount, TransactionType.BankDepositFromWallet, "BankAccount", monthlyOutcomeLimit, bonusDaysOnCreate, bonusTransfersPerMonth);
 
             var isValid = await BankService.Deposit(account.Id, account.Pin);
             if (isValid)
@@ -243,8 +244,10 @@ namespace ApplicationServices
             decimal provisionLimit = (await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "ProvisionLimit")).Value;
             decimal provisionUnderLimitCost = (await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "ProvisionUnderLimitCost")).Value;
             decimal provisionOverLimitCostPercent = (await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "ProvisionOverLimitCostPercent")).Value;
-
+            int bonusDaysOnCreate = Decimal.ToInt32((await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "BonusDaysOnCreate")).Value);
+            int bonusTransfersPerMonth = Decimal.ToInt32((await CoreUnitOfWork.SystemParameterRepository.GetFirstOrDefaultWithIncludes(sp => sp.Name == "BonusTransfersPerMonth")).Value);
             decimal actualProvision;
+            
             if (intraWalletTransferDTO.Amount < provisionLimit)
             {
                 actualProvision = provisionUnderLimitCost;
@@ -254,7 +257,7 @@ namespace ApplicationServices
                 actualProvision = intraWalletTransferDTO.Amount * provisionOverLimitCostPercent / 100.00m;
             }
 
-            accountFrom.PayOut(intraWalletTransferDTO.Amount, TransactionType.IntraWallet, accountTo.Id, monthlyOutcomeLimit, actualProvision);
+            accountFrom.PayOut(intraWalletTransferDTO.Amount, TransactionType.IntraWallet, accountTo.Id, monthlyOutcomeLimit, bonusDaysOnCreate, bonusTransfersPerMonth, actualProvision);
             accountTo.PayIn(intraWalletTransferDTO.Amount, TransactionType.IntraWallet, accountFrom.Id, monthlyIncomeLimit);
 
             await CoreUnitOfWork.AccountRepository.Update(accountFrom);

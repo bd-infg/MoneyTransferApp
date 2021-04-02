@@ -4,14 +4,16 @@ using EFCoreDataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EFCoreDataAccess.Migrations
 {
     [DbContext(typeof(CoreEFCoreDbContext))]
-    partial class CoreEFCoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210402151110_NewDatesOnAccount")]
+    partial class NewDatesOnAccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +40,6 @@ namespace EFCoreDataAccess.Migrations
 
                     b.Property<bool>("Blocked")
                         .HasColumnType("bit");
-
-                    b.Property<int>("BonusTransfersUsed")
-                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(30)

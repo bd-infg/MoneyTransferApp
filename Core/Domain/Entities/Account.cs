@@ -18,11 +18,14 @@ namespace Domain.Entities
         public decimal Balance { get; private set; }
         public DateTime OpeningDate { get; private set; }
         public DateTime LastTransactionDate { get; private set; }
+        public DateTime LastIncomeTransactionDate { get; private set; }
+        public DateTime LastOutcomeTransactionDate { get; private set; }
         public decimal MonthlyIncome { get; private set; }
         public decimal MonthlyOutcome { get; private set; }
         public ICollection<Transaction> Transactions { get; private set; }
         public byte[] RowVersion { get; private set; }
         public bool Blocked { get; private set; }
+        public int BonusTransfersUsed { get; private set; }
         public Account()
         {
             Transactions = new List<Transaction>();
@@ -39,17 +42,20 @@ namespace Domain.Entities
             AccountNumber = accountNumber;
             OpeningDate = DateTime.Now;
             LastTransactionDate = DateTime.Now.AddMonths(-1);
+            LastIncomeTransactionDate = DateTime.Now.AddMonths(-1);
+            LastOutcomeTransactionDate = DateTime.Now.AddMonths(-1);
             MonthlyIncome = 0.0m;
             MonthlyOutcome = 0.0m;
             Balance = 0.0m;
             Transactions = new List<Transaction>();
             Blocked = false;
+            BonusTransfersUsed = 0;
         }
 
         public void PayIn(decimal amount, TransactionType type, string accountFrom, decimal monthlyIncomeLimit)
         {
             decimal newMonthlyIncome;
-            if (LastTransactionDate < DateTime.Now && LastTransactionDate.Month < DateTime.Now.Month)
+            if (LastIncomeTransactionDate < DateTime.Now && LastIncomeTransactionDate.Month < DateTime.Now.Month)
             {
                 newMonthlyIncome = amount;
             }
@@ -65,13 +71,36 @@ namespace Domain.Entities
             Balance += amount;
             var transaction = new Transaction(amount, accountFrom, this.Id, type, TransactionFlowType.In);
             Transactions.Add(transaction);
-            LastTransactionDate = DateTime.Now;
+
+            if(type == TransactionType.BankWithdrawalToWallet)
+            {
+                LastIncomeTransactionDate = DateTime.Now;
+            }    
         }
 
-        public int PayOut(decimal amount, TransactionType type, string accountTo, decimal monthlyOutcomeLimit, decimal provision = 0.0m)
+        public int PayOut(decimal amount, TransactionType type, string accountTo, decimal monthlyOutcomeLimit, int bonusDaysOnCreate, int bonusTransfersPerMonth, decimal provision = 0.0m)
         {
+           
+            if (type == TransactionType.IntraWallet)
+            {
+                if (LastTransactionDate < DateTime.Now && ((LastTransactionDate.Month < DateTime.Now.Month) || (LastTransactionDate.Year < DateTime.Now.Year && LastTransactionDate.Month>=DateTime.Now.Month)))
+                {
+                    BonusTransfersUsed = 0;
+                }
+                DateTime bonusDate = OpeningDate.AddDays(bonusDaysOnCreate);
+                if (DateTime.Now < bonusDate)
+                {
+                    provision = 0.0m;
+                }
+                else if (BonusTransfersUsed < bonusTransfersPerMonth)
+                {
+                    provision = 0.0m;
+                    BonusTransfersUsed++;
+                }
+            }            
+
             decimal newMonthlyOutcome;
-            if (LastTransactionDate < DateTime.Now && LastTransactionDate.Month < DateTime.Now.Month)
+            if (LastOutcomeTransactionDate < DateTime.Now && LastOutcomeTransactionDate.Month < DateTime.Now.Month)
             {
                 newMonthlyOutcome = amount + provision;
             }
@@ -103,7 +132,14 @@ namespace Domain.Entities
                 cnt++;
             }
 
-            LastTransactionDate = DateTime.Now;
+            if (type == TransactionType.IntraWallet)
+            {
+                LastTransactionDate = DateTime.Now;
+            }
+            else if (type == TransactionType.BankDepositFromWallet)
+            {
+                LastOutcomeTransactionDate = DateTime.Now;
+            }
             return cnt;
         }
 

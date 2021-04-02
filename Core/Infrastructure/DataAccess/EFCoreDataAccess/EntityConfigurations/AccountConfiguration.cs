@@ -23,6 +23,8 @@ namespace EFCoreDataAccess.EntityConfigurations
             modelBuilder.Property(p => p.OpeningDate).HasColumnType("datetime");
             modelBuilder.Property(a => a.MonthlyIncome).HasPrecision(12, 2);
             modelBuilder.Property(a => a.MonthlyOutcome).HasPrecision(12, 2);
+            modelBuilder.Property(p => p.LastIncomeTransactionDate).HasColumnType("datetime");
+            modelBuilder.Property(p => p.LastOutcomeTransactionDate).HasColumnType("datetime");
         }
     }
 }

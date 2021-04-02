@@ -110,7 +110,7 @@ namespace ApplicationServiceTests
                 Assert.AreEqual(success, true, "PayIn must be successful");
                 Assert.AreEqual(100.0m, account.Balance, "Balance must be 100");
                 Assert.AreEqual(100.0m, account.MonthlyIncome, "MonthlyIncome must be 100");
-                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+                Assert.AreEqual(DateTime.Now.Date, account.LastIncomeTransactionDate.Date, "LastIncomeTransactionDate must be today");
 
 
             }
@@ -149,7 +149,7 @@ namespace ApplicationServiceTests
                 Assert.AreEqual(success, true, "PayIn must be successful");
                 Assert.AreEqual(150.0m, account.Balance, "Balance must be 150");
                 Assert.AreEqual(150.0m, account.MonthlyIncome, "MonthlyIncome must be 150");
-                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+                Assert.AreEqual(DateTime.Now.Date, account.LastIncomeTransactionDate.Date, "LastIncomeTransactionDate must be today");
 
 
             }
@@ -190,7 +190,7 @@ namespace ApplicationServiceTests
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887793");
                 Assert.AreEqual(0.0m, account.Balance, "Balance must be 0");
                 Assert.AreEqual(0.0m, account.MonthlyIncome, "MonthlyIncome must be 0");
-                Assert.AreEqual(DateTime.Now.Date.AddMonths(-1), account.LastTransactionDate.Date, "LastTransactionDate must be last month");
+                Assert.AreEqual(DateTime.Now.Date.AddMonths(-1), account.LastIncomeTransactionDate.Date, "LastTransactionDate must be last month");
                 Assert.AreEqual(exceed.Message, "This account would exceed the monthly income limit");
             }
             catch (Exception ex)
@@ -228,7 +228,7 @@ namespace ApplicationServiceTests
                 Assert.AreEqual(50.0m, account.Balance, "Balance must be 50");
                 Assert.AreEqual(100.0m, account.MonthlyIncome, "MonthlyIncome must be 100");
                 Assert.AreEqual(50.0m, account.MonthlyOutcome, "MonthlyOutcome must be 50");
-                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+                Assert.AreEqual(DateTime.Now.Date, account.LastOutcomeTransactionDate.Date, "LastTransactionDate must be today");
 
 
             }
@@ -268,7 +268,7 @@ namespace ApplicationServiceTests
                 Assert.AreEqual(25.0m, account.Balance, "Balance must be 25");
                 Assert.AreEqual(100.0m, account.MonthlyIncome, "MonthlyIncome must be 100");
                 Assert.AreEqual(75.0m, account.MonthlyOutcome, "MonthlyOutcome must be 75");
-                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+                Assert.AreEqual(DateTime.Now.Date, account.LastOutcomeTransactionDate.Date, "LastOutcomeTransactionDate must be today");
 
 
             }
@@ -307,7 +307,7 @@ namespace ApplicationServiceTests
                 Account account = await _coreUnitOfWork.AccountRepository.GetById("2705996887796");
                 Assert.AreEqual(100.0m, account.Balance, "Balance must be 100");
                 Assert.AreEqual(0.0m, account.MonthlyOutcome, "MonthlyOutcome must be 0");
-                Assert.AreEqual(DateTime.Now.Date, account.LastTransactionDate.Date, "LastTransactionDate must be today");
+                Assert.AreEqual(DateTime.Now.Date.AddMonths(-1), account.LastOutcomeTransactionDate.Date, "LastTransactionDate must be last month");
                 Assert.AreEqual(exceed.Message, "This account would exceed the monthly outcome limit");
 
             }
@@ -360,6 +360,7 @@ namespace ApplicationServiceTests
                 Assert.AreEqual(100.0m, account2.Balance, "Balance must be 100");
                 Assert.AreEqual(100.0m, account2.MonthlyIncome, "MonthlyIncome must be 100");
                 Assert.AreEqual(0.0m, account2.MonthlyOutcome, "MonthlyOutcome must be 0");
+                Assert.AreEqual(DateTime.Now.Date, account1.LastTransactionDate.Date, "LastTransactionDate Must be today");
 
             }
             catch (Exception ex)
@@ -411,7 +412,7 @@ namespace ApplicationServiceTests
                 Assert.AreEqual(15000.0m, account2.Balance, "Balance must be 15000");
                 Assert.AreEqual(15000.0m, account2.MonthlyIncome, "MonthlyIncome must be 15000");
                 Assert.AreEqual(0.0m, account2.MonthlyOutcome, "MonthlyOutcome must be 0");
-
+                Assert.AreEqual(DateTime.Now.Date, account1.LastTransactionDate.Date, "LastTransactionDate Must be today");
             }
             catch (Exception ex)
             {

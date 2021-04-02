@@ -41,6 +41,14 @@ namespace ApplicationServiceTests
                 dbContext.SystemParameters.Add(provisionOverLimitCostPercent);
                 dbContext.SaveChanges();
 
+                SystemParameter bonusDays = new SystemParameter("BonusDaysOnCreate", 0.00m);
+                dbContext.SystemParameters.Add(bonusDays);
+                dbContext.SaveChanges();
+
+                SystemParameter bonusTransfers = new SystemParameter("BonusTransfersPerMonth", 0.00m);
+                dbContext.SystemParameters.Add(bonusTransfers);
+                dbContext.SaveChanges();
+
                 dbContext.Database.CommitTransaction();
             }
         }
