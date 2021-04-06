@@ -215,6 +215,10 @@ namespace ApplicationServices
 
         public async Task<bool> IntraWalletTransfer(IntraWalletTransferDTO intraWalletTransferDTO)
         {
+            if(intraWalletTransferDTO.IdFrom == intraWalletTransferDTO.IdTo)
+            {
+                throw new ArgumentException("Bruh, don't transfer to yourself, mkay?");
+            }
             Account accountFrom = await CoreUnitOfWork.AccountRepository.GetById(intraWalletTransferDTO.IdFrom);
             if (accountFrom == null)
             {
